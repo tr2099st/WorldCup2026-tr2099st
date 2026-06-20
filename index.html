@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FIFAワールドカップの順位表と試合結果を確認できるWebアプリ"
+    />
+    <title>World Cup 2026 Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <img
+        class="hero-player-image"
+        src="./assets/world-cup-2026-players-hero-v2.png"
+        alt="ベルギー、日本、フランス、ブラジル、カナダ、オランダの代表選手たち"
+      />
+      <div class="hero-shade" aria-hidden="true"></div>
+      <nav class="nav container" aria-label="メインナビゲーション">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">W</span>
+          <span>World Cup 2026</span>
+        </a>
+        <div class="nav-actions">
+          <button class="refresh-button" id="refreshButton" type="button">
+            <span aria-hidden="true">↻</span>
+            更新
+          </button>
+          <div class="detail-menu-wrap">
+            <button
+              class="detail-menu-button"
+              id="detailMenuButton"
+              type="button"
+              aria-expanded="false"
+              aria-controls="detailMenu"
+            >
+              <span class="menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+              詳細
+            </button>
+            <div class="detail-menu" id="detailMenu" hidden>
+              <button type="button" data-tab-target="matches">試合結果</button>
+              <button type="button" data-tab-target="standings">順位表</button>
+              <button type="button" data-tab-target="tournament">トーナメント</button>
+              <button type="button" data-tab-target="defense">最少失点</button>
+              <button type="button" data-tab-target="scoring">最多得点</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="hero-content container">
+        <div class="hero-copy">
+          <p class="eyebrow">THE HEAT IS ON</p>
+          <h1>すべてを、<br /><span>この一戦に。</span></h1>
+          <p class="hero-description">
+            国を背負い、誇りを懸ける。世界最高峰の熱狂が、ここから始まる。
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      <div class="status-row">
+        <div class="data-status">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="dataStatus">データを読み込んでいます...</span>
+        </div>
+        <time id="lastUpdated"></time>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="表示内容">
+        <button
+          class="tab"
+          id="matchesTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="matchesPanel"
+        >
+          試合結果
+        </button>
+        <button
+          class="tab is-active"
+          id="standingsTab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="standingsPanel"
+        >
+          順位表
+        </button>
+        <button
+          class="tab"
+          id="tournamentTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tournamentPanel"
+        >
+          トーナメント
+        </button>
+        <button
+          class="tab"
+          id="defenseTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="defensePanel"
+        >
+          最少失点
+        </button>
+        <button
+          class="tab"
+          id="scoringTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="scoringPanel"
+        >
+          最多得点
+        </button>
+      </div>
+
+      <section
+        class="panel"
+        id="standingsPanel"
+        role="tabpanel"
+        aria-labelledby="standingsTab"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">GROUP STAGE</p>
+            <h2>グループ順位</h2>
+          </div>
+          <label class="select-wrap">
+            <span class="sr-only">グループを選択</span>
+            <select id="groupFilter">
+              <option value="ALL">全グループ</option>
+            </select>
+          </label>
+        </div>
+        <div class="standings-grid" id="standingsGrid"></div>
+      </section>
+
+      <section
+        class="panel"
+        id="matchesPanel"
+        role="tabpanel"
+        aria-label="試合結果"
+        hidden
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">MATCH CENTER</p>
+            <h2>試合結果</h2>
+          </div>
+          <label class="select-wrap">
+            <span class="sr-only">試合ステータスを選択</span>
+            <select id="matchFilter">
+              <option value="ALL">すべての試合</option>
+              <option value="TODAY">今日の結果</option>
+              <option value="FINISHED">終了</option>
+              <option value="SCHEDULED">今後の試合</option>
+            </select>
+          </label>
+        </div>
+        <div class="matches-list" id="matchesList"></div>
+      </section>
+
+      <section
+        class="panel"
+        id="defensePanel"
+        role="tabpanel"
+        aria-labelledby="defenseTab"
+        hidden
+      >
+        <div class="section-heading defense-heading">
+          <div>
+            <p class="section-kicker">GOLDEN DEFENSE</p>
+            <h2>最少失点ランキング</h2>
+          </div>
+          <p class="section-note">グループステージの失点数で集計</p>
+        </div>
+        <div id="defenseRanking"></div>
+      </section>
+
+      <section
+        class="panel"
+        id="tournamentPanel"
+        role="tabpanel"
+        aria-labelledby="tournamentTab"
+        hidden
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">KNOCKOUT STAGE</p>
+            <h2>決勝トーナメント</h2>
+          </div>
+          <p class="section-note">決勝ラウンドの結果をステージ別に表示</p>
+        </div>
+        <div id="tournamentResults"></div>
+      </section>
+
+      <section
+        class="panel"
+        id="scoringPanel"
+        role="tabpanel"
+        aria-label="国別得点ランキング"
+        hidden
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">GOAL RANKING</p>
+            <h2>最多得点</h2>
+          </div>
+          <p class="section-note">各国の総得点で集計</p>
+        </div>
+        <div id="scoringRanking"></div>
+      </section>
+
+      <section class="error-card" id="errorCard" hidden>
+        <strong>データを表示できませんでした</strong>
+        <p id="errorMessage"></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <p>World Cup 2026 Tracker</p>
+        <p>
+          Football data provided by
+          <a href="https://www.football-data.org/" target="_blank" rel="noopener noreferrer">Football-Data.org API</a>
+          · 無料プランのみ使用
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
