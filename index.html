@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./css/styles.css?v=20260621-2" />
+    <link rel="stylesheet" href="./css/styles.css?v=20260621-3" />
   </head>
   <body>
     <header class="hero">
@@ -51,6 +51,7 @@
               <button type="button" data-tab-target="tournament">トーナメント</button>
               <button type="button" data-tab-target="defense">最少失点</button>
               <button type="button" data-tab-target="scoring">最多得点</button>
+              <button type="button" data-tab-target="aggregate">集計結果</button>
             </div>
           </div>
         </div>
@@ -127,6 +128,16 @@
         >
           最多得点
         </button>
+        <button
+          class="tab"
+          id="aggregateTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="aggregatePanel"
+        >
+          集計結果
+        </button>
       </div>
 
       <section
@@ -187,7 +198,7 @@
             <p class="section-kicker">GOLDEN DEFENSE</p>
             <h2>最少失点ランキング</h2>
           </div>
-          <p class="section-note">グループステージの失点数で集計</p>
+          <p class="section-note">終了済みの全試合で集計</p>
         </div>
         <div id="defenseRanking"></div>
       </section>
@@ -226,6 +237,23 @@
         <div id="scoringRanking"></div>
       </section>
 
+      <section
+        class="panel"
+        id="aggregatePanel"
+        role="tabpanel"
+        aria-labelledby="aggregateTab"
+        hidden
+      >
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">PREDICTION SUMMARY</p>
+            <h2>集計結果</h2>
+          </div>
+          <p class="section-note">大会前に提出された予想・固定データ</p>
+        </div>
+        <div id="aggregateResults"></div>
+      </section>
+
       <section class="error-card" id="errorCard" hidden>
         <strong>データを表示できませんでした</strong>
         <p id="errorMessage"></p>
@@ -243,6 +271,6 @@
       </div>
     </footer>
 
-    <script type="module" src="./js/app.js?v=20260621-2"></script>
+    <script type="module" src="./js/app.js?v=20260621-3"></script>
   </body>
 </html>

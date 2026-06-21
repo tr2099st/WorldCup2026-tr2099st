@@ -274,7 +274,7 @@ h1 span {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 6px;
   width: 100%;
   padding: 5px;
@@ -933,6 +933,118 @@ h1 span {
   text-align: right;
 }
 
+.aggregate-summary {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  max-width: 1040px;
+  padding: 14px 18px;
+  margin: 0 auto 16px;
+  background: #edf1ff;
+  border: 1px solid rgba(35, 87, 245, 0.14);
+  border-radius: 12px;
+}
+
+.aggregate-summary span {
+  padding: 7px 11px;
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--blue);
+  border-radius: 999px;
+}
+
+.aggregate-summary p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.aggregate-table-scroll {
+  max-width: 1040px;
+  margin: auto;
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.aggregate-table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.aggregate-table th,
+.aggregate-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.aggregate-table thead th {
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  background: var(--navy);
+}
+
+.aggregate-table thead th small {
+  display: block;
+  margin-top: 3px;
+  color: var(--cyan);
+  font-size: 0.58rem;
+}
+
+.aggregate-table tbody th {
+  min-width: 120px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.aggregate-table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+.aggregate-table tbody tr:last-child th,
+.aggregate-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.prediction-chip {
+  display: inline-block;
+  min-width: 68px;
+  padding: 5px 8px;
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  background: #edf1ff;
+  border-radius: 7px;
+}
+
+.japan-prediction {
+  color: var(--blue);
+}
+
+.champion-1 {
+  background: #fff3ce;
+}
+
+.champion-2 {
+  background: #e9edf2;
+}
+
+.champion-3,
+.champion-4 {
+  background: #f2e9e1;
+}
+
 .defense-note span {
   margin-bottom: 3px;
   color: var(--blue);
@@ -1314,6 +1426,12 @@ h1 span {
   }
 
   .scoring-podium {
+    gap: 8px;
+  }
+
+  .aggregate-summary {
+    align-items: flex-start;
+    flex-direction: column;
     gap: 8px;
   }
 

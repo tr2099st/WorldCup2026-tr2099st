@@ -1,8 +1,8 @@
-import { FootballDataApi } from "../api/footballDataApi.js?v=20260621-2";
+import { FootballDataApi } from "../api/footballDataApi.js?v=20260621-3";
 import {
   DEMO_MATCHES,
   DEMO_STANDINGS,
-} from "../data/demoData.js?v=20260621-2";
+} from "../data/demoData.js?v=20260621-3";
 
 export class WorldCupService {
   constructor(config) {

@@ -1,0 +1,80 @@
+export const AGGREGATE_RESULTS = [
+  {
+    name: "脇田元樹",
+    japanPrediction: "ベスト32",
+    defensePrediction: "日本",
+    championPredictions: ["スペイン", "スペイン", "フランス", "フランス"],
+  },
+  {
+    name: "松本　空大",
+    japanPrediction: "ベスト8",
+    defensePrediction: "イングランド",
+    championPredictions: ["スペイン", "イングランド", "フランス", "ブラジル"],
+  },
+  {
+    name: "神谷友斗",
+    japanPrediction: "ベスト16",
+    defensePrediction: "オーストラリア",
+    championPredictions: ["スペイン", "アルゼンチン", "フランス", "ブラジル"],
+  },
+  {
+    name: "松川巧実",
+    japanPrediction: "ベスト32",
+    defensePrediction: "ポルトガル",
+    championPredictions: ["スペイン", "ポルトガル", "アルゼンチン", "フランス"],
+  },
+  {
+    name: "高沢ザイオン",
+    japanPrediction: "ベスト8",
+    defensePrediction: "メキシコ",
+    championPredictions: ["ブラジル", "イングランド", "イングランド", "日本"],
+  },
+  {
+    name: "河村",
+    japanPrediction: "ベスト8",
+    defensePrediction: "ブラジル",
+    championPredictions: ["イングランド", "イングランド", "スペイン", "ドイツ"],
+  },
+  {
+    name: "中村大紀",
+    japanPrediction: "ベスト32",
+    defensePrediction: "ベルギー",
+    championPredictions: ["ドイツ", "スイス", "ポルトガル", "ベルギー"],
+  },
+  {
+    name: "後藤友輔",
+    japanPrediction: "ベスト16",
+    defensePrediction: "スペイン",
+    championPredictions: ["スペイン", "フランス", "ポルトガル", "スペイン"],
+  },
+  {
+    name: "小関凌太",
+    japanPrediction: "ベスト8",
+    defensePrediction: "アルゼンチン",
+    championPredictions: ["フランス", "ブラジル", "スペイン", "アルゼンチン"],
+  },
+  {
+    name: "竹内 廉",
+    japanPrediction: "ベスト32",
+    defensePrediction: "エクアドル",
+    championPredictions: ["スペイン", "フランス", "スペイン", "フランス"],
+  },
+  {
+    name: "吉井佑作",
+    japanPrediction: "ベスト8",
+    defensePrediction: "スペイン",
+    championPredictions: ["フランス", "スペイン", "アルゼンチン", "日本"],
+  },
+  {
+    name: "佐藤輝弥",
+    japanPrediction: "2位",
+    defensePrediction: "ベルギー",
+    championPredictions: ["イングランド", "フランス", "フランス", "アルゼンチン"],
+  },
+  {
+    name: "亀井翔太",
+    japanPrediction: "ベスト32",
+    defensePrediction: "イングランド",
+    championPredictions: ["イングランド", "フランス", "スペイン", "イングランド"],
+  },
+];

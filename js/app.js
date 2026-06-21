@@ -1,13 +1,15 @@
-import { APP_CONFIG } from "./config.js?v=20260621-2";
-import { WorldCupService } from "./services/worldCupService.js?v=20260621-2";
+import { APP_CONFIG } from "./config.js?v=20260621-3";
+import { AGGREGATE_RESULTS } from "./data/aggregateResults.js?v=20260621-3";
+import { WorldCupService } from "./services/worldCupService.js?v=20260621-3";
 import {
   populateGroupFilter,
   renderDefenseRanking,
+  renderAggregateResults,
   renderMatches,
   renderScoringRanking,
   renderStandings,
   renderTournament,
-} from "./ui/render.js?v=20260621-2";
+} from "./ui/render.js?v=20260621-3";
 
 const elements = {
   standingsGrid: document.querySelector("#standingsGrid"),
@@ -15,6 +17,7 @@ const elements = {
   defenseRanking: document.querySelector("#defenseRanking"),
   tournamentResults: document.querySelector("#tournamentResults"),
   scoringRanking: document.querySelector("#scoringRanking"),
+  aggregateResults: document.querySelector("#aggregateResults"),
   groupFilter: document.querySelector("#groupFilter"),
   matchFilter: document.querySelector("#matchFilter"),
   standingsTab: document.querySelector("#standingsTab"),
@@ -22,11 +25,13 @@ const elements = {
   defenseTab: document.querySelector("#defenseTab"),
   tournamentTab: document.querySelector("#tournamentTab"),
   scoringTab: document.querySelector("#scoringTab"),
+  aggregateTab: document.querySelector("#aggregateTab"),
   standingsPanel: document.querySelector("#standingsPanel"),
   matchesPanel: document.querySelector("#matchesPanel"),
   defensePanel: document.querySelector("#defensePanel"),
   tournamentPanel: document.querySelector("#tournamentPanel"),
   scoringPanel: document.querySelector("#scoringPanel"),
+  aggregatePanel: document.querySelector("#aggregatePanel"),
   refreshButton: document.querySelector("#refreshButton"),
   detailMenuButton: document.querySelector("#detailMenuButton"),
   detailMenu: document.querySelector("#detailMenu"),
@@ -59,6 +64,8 @@ function setLoading(isLoading) {
       '<div class="loading-card">トーナメントを読み込んでいます...</div>';
     elements.scoringRanking.innerHTML =
       '<div class="loading-card">得点ランキングを読み込んでいます...</div>';
+    elements.aggregateResults.innerHTML =
+      '<div class="loading-card">集計結果を読み込んでいます...</div>';
   }
 }
 
@@ -104,9 +111,14 @@ function renderAll() {
     tournamentData.matches,
     elements.matchFilter.value,
   );
-  renderDefenseRanking(elements.defenseRanking, tournamentData.standings);
+  renderDefenseRanking(
+    elements.defenseRanking,
+    tournamentData.standings,
+    tournamentData.matches,
+  );
   renderTournament(elements.tournamentResults, tournamentData.matches);
   renderScoringRanking(elements.scoringRanking, tournamentData.standings);
+  renderAggregateResults(elements.aggregateResults, AGGREGATE_RESULTS);
 }
 
 async function loadData() {
@@ -137,6 +149,7 @@ function activateTab(tabName) {
     defense: [elements.defenseTab, elements.defensePanel],
     tournament: [elements.tournamentTab, elements.tournamentPanel],
     scoring: [elements.scoringTab, elements.scoringPanel],
+    aggregate: [elements.aggregateTab, elements.aggregatePanel],
   };
 
   Object.entries(tabMap).forEach(([name, [tab, panel]]) => {
@@ -154,6 +167,7 @@ elements.tournamentTab.addEventListener("click", () =>
   activateTab("tournament"),
 );
 elements.scoringTab.addEventListener("click", () => activateTab("scoring"));
+elements.aggregateTab.addEventListener("click", () => activateTab("aggregate"));
 elements.detailMenuButton.addEventListener("click", () => {
   const willOpen = elements.detailMenu.hidden;
   elements.detailMenu.hidden = !willOpen;

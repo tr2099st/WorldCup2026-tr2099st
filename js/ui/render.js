@@ -183,11 +183,64 @@ export function renderMatches(container, matches, selectedStatus = "ALL") {
     .join("");
 }
 
-export function renderDefenseRanking(container, standings) {
-  const ranking = standings
-    .flatMap(({ group, table }) =>
-      table.map((row) => ({ ...row, group })),
+export function renderDefenseRanking(container, standings, matches = []) {
+  const teamStats = new Map();
+
+  standings.forEach(({ group, table }) => {
+    table.forEach((row) => {
+      teamStats.set(row.team.tla, {
+        group,
+        team: row.team,
+        playedGames: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+      });
+    });
+  });
+
+  matches
+    .filter(
+      (match) =>
+        match.status === "FINISHED" &&
+        Number.isFinite(match.score.home) &&
+        Number.isFinite(match.score.away) &&
+        match.homeTeam.tla !== "TBD" &&
+        match.awayTeam.tla !== "TBD",
     )
+    .forEach((match) => {
+      const home = teamStats.get(match.homeTeam.tla) ?? {
+        group: match.group,
+        team: match.homeTeam,
+        playedGames: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+      };
+      const away = teamStats.get(match.awayTeam.tla) ?? {
+        group: match.group,
+        team: match.awayTeam,
+        playedGames: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+      };
+
+      home.playedGames += 1;
+      home.goalsFor += match.score.home;
+      home.goalsAgainst += match.score.away;
+      home.goalDifference = home.goalsFor - home.goalsAgainst;
+
+      away.playedGames += 1;
+      away.goalsFor += match.score.away;
+      away.goalsAgainst += match.score.home;
+      away.goalDifference = away.goalsFor - away.goalsAgainst;
+
+      teamStats.set(match.homeTeam.tla, home);
+      teamStats.set(match.awayTeam.tla, away);
+    });
+
+  const ranking = [...teamStats.values()]
     .filter((row) => row.playedGames > 0)
     .sort(
       (a, b) =>
@@ -428,6 +481,54 @@ export function renderScoringRanking(container, standings) {
         )
         .join("")}
     </div>`;
+}
+
+export function renderAggregateResults(container, results) {
+  if (!results.length) {
+    container.innerHTML =
+      '<div class="empty-state">集計結果がありません。</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="aggregate-summary">
+      <span>${results.length}名</span>
+      <p>日本の成績・最少失点国・優勝国の事前予想</p>
+    </div>
+    <div class="aggregate-table-scroll">
+      <table class="aggregate-table">
+        <thead>
+          <tr>
+            <th scope="col">名前</th>
+            <th scope="col">日本の成績予想</th>
+            <th scope="col">最少失点国予想</th>
+            <th scope="col">優勝国 第1予想<small>4口</small></th>
+            <th scope="col">優勝国 第2予想<small>2口</small></th>
+            <th scope="col">優勝国 第3予想<small>1口</small></th>
+            <th scope="col">優勝国 第4予想<small>1口</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${results
+            .map(
+              (row) => `
+                <tr>
+                  <th scope="row">${escapeHtml(row.name)}</th>
+                  <td><span class="prediction-chip japan-prediction">${escapeHtml(row.japanPrediction)}</span></td>
+                  <td>${escapeHtml(row.defensePrediction)}</td>
+                  ${row.championPredictions
+                    .map(
+                      (country, index) =>
+                        `<td><span class="prediction-chip champion-${index + 1}">${escapeHtml(country)}</span></td>`,
+                    )
+                    .join("")}
+                </tr>`,
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 export function populateGroupFilter(select, standings) {
