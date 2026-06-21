@@ -14,14 +14,14 @@
 
 ## 公開構成
 
-公開版はCloudflare PagesとPages Functionsを使用します。
+公開版はCloudflare WorkersとStatic Assetsを使用します。
 
 ```text
 ブラウザ
   ↓
-Cloudflare Pages
+Cloudflare Worker Static Assets
   ↓
-Pages Functions
+Worker API
   ↓
 Football-Data.org
 ```
@@ -54,7 +54,7 @@ python -m http.server 8080
 http://localhost:8080
 ```
 
-通常のPythonサーバーではPages Functionsが動かないため、ローカル画面ではデモデータへ切り替わります。本番のCloudflare PagesではライブAPIを利用できます。
+通常のPythonサーバーではWorker APIが動かないため、ローカル画面ではデモデータへ切り替わります。本番のCloudflare WorkersではライブAPIを利用できます。
 
 ## GitHubへアップロードしないファイル
 
@@ -71,15 +71,13 @@ js/config.local.js
 .
 ├── assets/
 ├── css/
-├── functions/
-│   └── api/
-│       └── [[path]].js
 ├── js/
 ├── .dev.vars.example
 ├── .gitignore
 ├── index.html
 ├── PROJECT_POLICY.md
 ├── PUBLIC_DEPLOYMENT.md
-└── README.md
+├── README.md
+├── worker.js
+└── wrangler.jsonc
 ```
-

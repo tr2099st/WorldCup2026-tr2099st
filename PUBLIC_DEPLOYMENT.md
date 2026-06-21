@@ -1,15 +1,15 @@
-# GitHub・Cloudflare Pages公開手順
+# GitHub・Cloudflare Workers公開手順
 
-このプロジェクトは、APIトークンをブラウザやGitHubへ公開しない構成になっています。
+このプロジェクトは、Cloudflare Workersの静的アセット機能とWorker APIを使い、APIトークンをブラウザやGitHubへ公開しない構成になっています。
 
 ## 公開構成
 
 ```text
 友人のブラウザ
   ↓
-Cloudflare Pages（HTML・CSS・JavaScript）
+Cloudflare Worker Static Assets（HTML・CSS・JavaScript）
   ↓
-Pages Functions（functions/api/[[path]].js）
+Worker API（worker.js）
   ↓
 Football-Data.org API
 ```
@@ -25,6 +25,8 @@ assets/
 css/
 functions/
 js/
+worker.js
+wrangler.jsonc
 .dev.vars.example
 .gitignore
 index.html
@@ -46,22 +48,20 @@ js/config.local.js
 
 GitHubのWeb画面から手動アップロードする場合は、上記2ファイルが選択されていないことを必ず確認してください。
 
-## Cloudflare Pagesへ接続
+## Cloudflare Workersへ接続
 
 1. Cloudflareの無料アカウントへログインします。
 2. 「Workers & Pages」を開きます。
-3. 「Create application」から「Pages」を選びます。
-4. 「Connect to Git」を選び、作成したGitHubリポジトリを指定します。
-5. Framework presetは「None」を選びます。
-6. Build commandは空欄にします。
-7. Build output directoryは `/` または空欄にします。
-8. Freeプランであることを確認してデプロイします。
+3. GitHubリポジトリに接続したWorkerを開きます。
+4. Build commandは空欄、Deploy commandは `npx wrangler deploy` にします。
+5. Root directoryは `/` のままにします。
+6. Freeプランであることを確認してデプロイします。
 
 支払い方法や有料プランを要求された場合は、登録せず作業を停止してください。
 
 ## APIトークンをCloudflareへ登録
 
-1. 作成したPagesプロジェクトを開きます。
+1. 作成したWorkerプロジェクトを開きます。
 2. 「Settings」→「Variables and Secrets」を開きます。
 3. Production環境へSecretを追加します。
 4. 名前を次のとおり入力します。
@@ -72,13 +72,26 @@ FOOTBALL_DATA_API_TOKEN
 
 5. 値へFootball-Data.orgの新しいAPIトークンを貼り付けます。
 6. 「Encrypt」またはSecretとして保存します。
-7. Pagesプロジェクトを再デプロイします。
+7. GitHubへ変更をコミットしてWorkerを再デプロイします。
 
 トークンをGitHub、README、JavaScript、チャットへ貼らないでください。
 
+## 「静的アセットだけのWorker」と表示された場合
+
+以前のリポジトリにはWorker本体がなかったため、Cloudflareが静的アセット専用と認識していました。
+
+現在は次のファイルを追加済みです。
+
+```text
+worker.js
+wrangler.jsonc
+```
+
+これらをGitHubへアップロードして再デプロイすると、`/api/*`ではWorkerが実行され、それ以外では静的サイトが表示されます。
+
 ## 動作確認
 
-Cloudflareから発行されたURLを開き、画面上部の状態が次になれば成功です。
+Cloudflareから発行されたWorkers URLを開き、画面上部の状態が次になれば成功です。
 
 ```text
 2026年大会・ライブAPI
