@@ -1,5 +1,5 @@
-import { APP_CONFIG } from "./config.js";
-import { WorldCupService } from "./services/worldCupService.js";
+import { APP_CONFIG } from "./config.js?v=20260621-2";
+import { WorldCupService } from "./services/worldCupService.js?v=20260621-2";
 import {
   populateGroupFilter,
   renderDefenseRanking,
@@ -7,7 +7,7 @@ import {
   renderScoringRanking,
   renderStandings,
   renderTournament,
-} from "./ui/render.js";
+} from "./ui/render.js?v=20260621-2";
 
 const elements = {
   standingsGrid: document.querySelector("#standingsGrid"),

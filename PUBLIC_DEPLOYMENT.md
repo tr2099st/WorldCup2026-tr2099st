@@ -48,6 +48,34 @@ js/config.local.js
 
 GitHubのWeb画面から手動アップロードする場合は、上記2ファイルが選択されていないことを必ず確認してください。
 
+## GitHub上の正しいファイル配置
+
+`app.js`、`services`、`ui`をリポジトリ直下へ置いてはいけません。すべて`js`フォルダ内に配置します。
+
+```text
+js/
+├── app.js
+├── config.js
+├── api/
+│   └── footballDataApi.js
+├── data/
+│   └── demoData.js
+├── services/
+│   └── worldCupService.js
+└── ui/
+    └── render.js
+```
+
+次の配置は誤りです。
+
+```text
+app.js
+services/
+ui/
+```
+
+GitHubのWeb画面で更新する場合は、ローカルの`js`フォルダ自体をアップロードしてください。`js`フォルダの中身だけをリポジトリ直下へドラッグしないでください。
+
 ## Cloudflare Workersへ接続
 
 1. Cloudflareの無料アカウントへログインします。

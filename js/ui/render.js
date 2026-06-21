@@ -34,16 +34,16 @@ const STATUS_LABELS = {
 };
 
 const APPLICATION_COUNTRY_NOTES = {
-  日本: "脇田元樹",
-  イングランド: "松本空大, 亀井翔太",
-  オーストラリア: "神谷友斗",
-  ポルトガル: "松川巧実",
-  メキシコ: "高沢ザイオン",
-  ブラジル: "河村樹人",
-  ベルギー: "中村大紀, 佐藤輝弥",
-  スペイン: "後藤友輔, 吉井佑作",
-  アルゼンチン: "小関凌太",
-  エクアドル: "竹内廉",
+  JPN: "脇田元樹",
+  ENG: "松本空大, 亀井翔太",
+  AUS: "神谷友斗",
+  POR: "松川巧実",
+  MEX: "高沢ザイオン",
+  BRA: "河村樹人",
+  BEL: "中村大紀, 佐藤輝弥",
+  ESP: "後藤友輔, 吉井佑作",
+  ARG: "小関凌太",
+  ECU: "竹内廉",
 };
 
 function escapeHtml(value = "") {
@@ -60,7 +60,9 @@ function crestMarkup(team) {
     return `<img class="team-crest" src="${escapeHtml(team.crest)}" alt="" loading="lazy" />`;
   }
 
-  return `<span class="team-placeholder" aria-hidden="true">${escapeHtml(team.tla || team.name.slice(0, 2))}</span>`;
+  const teamName = team?.name || "未定";
+  const teamCode = team?.tla || teamName.slice(0, 2) || "TBD";
+  return `<span class="team-placeholder" aria-hidden="true">${escapeHtml(teamCode)}</span>`;
 }
 
 export function renderStandings(container, standings, selectedGroup = "ALL") {
@@ -203,15 +205,15 @@ export function renderDefenseRanking(container, standings) {
 
   const leader = ranking[0];
   const applicationCountries = ranking.filter(
-    (row) => APPLICATION_COUNTRY_NOTES[row.team.name],
+    (row) => APPLICATION_COUNTRY_NOTES[row.team.tla],
   );
   const otherCountries = ranking.filter(
-    (row) => !APPLICATION_COUNTRY_NOTES[row.team.name],
+    (row) => !APPLICATION_COUNTRY_NOTES[row.team.tla],
   );
 
   const renderRankingRow = (row, { application = false } = {}) => {
     const overallPosition = ranking.indexOf(row) + 1;
-    const note = APPLICATION_COUNTRY_NOTES[row.team.name];
+    const note = APPLICATION_COUNTRY_NOTES[row.team.tla];
 
     return `
       <article class="defense-row ${application ? "is-application" : ""}">

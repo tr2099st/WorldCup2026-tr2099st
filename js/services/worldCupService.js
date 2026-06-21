@@ -1,8 +1,8 @@
-import { FootballDataApi } from "../api/footballDataApi.js";
+import { FootballDataApi } from "../api/footballDataApi.js?v=20260621-2";
 import {
   DEMO_MATCHES,
   DEMO_STANDINGS,
-} from "../data/demoData.js";
+} from "../data/demoData.js?v=20260621-2";
 
 export class WorldCupService {
   constructor(config) {
@@ -29,7 +29,10 @@ export class WorldCupService {
       return {
         source: "live",
         season: this.config.season,
-        standings: this.normalizeStandings(standingsResponse.standings ?? []),
+        standings: this.normalizeStandings(
+          standingsResponse.standings ?? [],
+          matchesResponse.matches ?? [],
+        ),
         matches: this.normalizeMatches(matchesResponse.matches ?? []),
         updatedAt: new Date(),
       };
@@ -52,27 +55,57 @@ export class WorldCupService {
     };
   }
 
-  normalizeStandings(standings) {
-    return standings
-      .filter((standing) => standing.type === "TOTAL")
-      .map((standing) => ({
-        group: standing.group ?? "GROUP_STAGE",
-        table: standing.table.map((row) => ({
-          position: row.position,
-          team: {
-            name: row.team.shortName || row.team.name,
-            tla: row.team.tla,
-            crest: row.team.crest,
-          },
-          playedGames: row.playedGames,
-          won: row.won,
-          draw: row.draw,
-          lost: row.lost,
-          points: row.points,
-          goalsFor: row.goalsFor,
-          goalsAgainst: row.goalsAgainst,
-          goalDifference: row.goalDifference,
-        })),
+  normalizeStandings(standings, matches) {
+    const totalStanding = standings.find(
+      (standing) =>
+        standing.type === "TOTAL" && standing.stage === "GROUP_STAGE",
+    );
+    if (!totalStanding) return [];
+
+    const teamGroupMap = new Map();
+    matches
+      .filter((match) => match.stage === "GROUP_STAGE" && match.group)
+      .forEach((match) => {
+        if (match.homeTeam?.id) {
+          teamGroupMap.set(match.homeTeam.id, match.group);
+        }
+        if (match.awayTeam?.id) {
+          teamGroupMap.set(match.awayTeam.id, match.group);
+        }
+      });
+
+    const groupedRows = new Map();
+    totalStanding.table.forEach((row) => {
+      const group = teamGroupMap.get(row.team?.id);
+      if (!group) return;
+      if (!groupedRows.has(group)) groupedRows.set(group, []);
+      groupedRows.get(group).push({
+        position: 0,
+        team: this.normalizeTeam(row.team),
+        playedGames: row.playedGames ?? 0,
+        won: row.won ?? 0,
+        draw: row.draw ?? 0,
+        lost: row.lost ?? 0,
+        points: row.points ?? 0,
+        goalsFor: row.goalsFor ?? 0,
+        goalsAgainst: row.goalsAgainst ?? 0,
+        goalDifference: row.goalDifference ?? 0,
+      });
+    });
+
+    return [...groupedRows.entries()]
+      .sort(([groupA], [groupB]) => groupA.localeCompare(groupB))
+      .map(([group, table]) => ({
+        group,
+        table: table
+          .sort(
+            (a, b) =>
+              b.points - a.points ||
+              b.goalDifference - a.goalDifference ||
+              b.goalsFor - a.goalsFor ||
+              a.team.name.localeCompare(b.team.name),
+          )
+          .map((row, index) => ({ ...row, position: index + 1 })),
       }));
   }
 
@@ -98,16 +131,8 @@ export class WorldCupService {
             month: "2-digit",
             day: "2-digit",
           }).format(new Date(match.utcDate)) === todayInJapan,
-        homeTeam: {
-          name: match.homeTeam.shortName || match.homeTeam.name,
-          tla: match.homeTeam.tla,
-          crest: match.homeTeam.crest,
-        },
-        awayTeam: {
-          name: match.awayTeam.shortName || match.awayTeam.name,
-          tla: match.awayTeam.tla,
-          crest: match.awayTeam.crest,
-        },
+        homeTeam: this.normalizeTeam(match.homeTeam),
+        awayTeam: this.normalizeTeam(match.awayTeam),
         score: {
           home: match.score?.fullTime?.home,
           away: match.score?.fullTime?.away,
@@ -117,6 +142,14 @@ export class WorldCupService {
         winner: match.score?.winner,
       }))
       .sort((a, b) => new Date(b.utcDate) - new Date(a.utcDate));
+  }
+
+  normalizeTeam(team) {
+    return {
+      name: team?.shortName || team?.name || "未定",
+      tla: team?.tla || "TBD",
+      crest: team?.crest || null,
+    };
   }
 
   getFriendlyError(error) {
