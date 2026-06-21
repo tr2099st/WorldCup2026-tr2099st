@@ -10,7 +10,18 @@ export default {
       return handleApiRequest(request, env, ctx);
     }
 
-    return env.ASSETS.fetch(request);
+    const assetResponse = await env.ASSETS.fetch(request);
+    if (url.pathname === "/" || url.pathname.endsWith(".html")) {
+      const headers = new Headers(assetResponse.headers);
+      headers.set("Cache-Control", "no-cache, must-revalidate");
+      return new Response(assetResponse.body, {
+        status: assetResponse.status,
+        statusText: assetResponse.statusText,
+        headers,
+      });
+    }
+
+    return assetResponse;
   },
 };
 
